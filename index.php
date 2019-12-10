@@ -2,10 +2,46 @@
 
     class Generate
     {
-        public $dir            = './data';
-        public $dirTarget      = './data-result';
-        public $table          = "galeri_foto_porto";
-        public $tableFields    = ["id_portofolio","stat","nama","image"];
+        public $dir            ;
+        public $dirTarget      ;
+        public $table          ;
+        public $tableFields    ;
+        
+        function __construct($config=NULL) {
+            if ( $config ) {
+                if ( ! ($config['dir'] && $config['dirTarget'] && $config['table'] && $config['tableFields']) ) {
+                    if ( ! $config['dir'] ) {
+                        echo '! dir is required<br>';
+                    }
+                    if ( ! $config['dirTarget'] ) {
+                        echo '! dirTarget is required<br>';
+                    }
+                    if ( ! $config['table'] ) {
+                        echo '! table is required<br>';
+                    }
+                    if ( ! $config['tableFields'] ) {
+                        echo '! tableFields is required<br>';
+                    }
+                    die();
+                } else {
+                    $this->dir         = $config['dir'];
+                    $this->dirTarget   = $config['dirTarget'];
+                    $this->table       = $config['table'];
+                    $this->tableFields = $config['tableFields'];
+                }
+            } else {
+                echo '
+                    config required like this:<br>
+                    $data = new Generate([
+                        "dir"        => string,
+                        "dirTarget"  => string,
+                        "table"      => string,
+                        "tableFields"=> array
+                    ]);
+                ';
+                die();
+            }
+        }
         
         function queryBuilder($data) {
             $query = "";
@@ -102,7 +138,21 @@
         
     }
     
-    $data = new Generate();
+    /* config Example :
+        $data = new Generate([
+            'dir'        => '.data',
+            'dirTarget'  => './data-result';
+            'table'      => "galeri_foto_porto";
+            'tableFields'=> ["id_portofolio","stat","nama","image"];
+        ]);
+    */
+    $data = new Generate([
+        'dir'        => './data',
+        'dirTarget'  => './data-result',
+        'table'      => "galeri_foto_porto",
+        'tableFields'=> ["id_portofolio","stat","nama","image"],
+    ]);
+
     echo '<pre>';
     print_r( $data->generateQueryFromArrayDir() );
     echo '<pre>';
